@@ -1,0 +1,212 @@
+\c dbname  ***Choose database
+\q         ***Quit postgresql 
+\d         ***Describe table 
+\dt        ***Show list tables
+\l         ***Show list of databases
+\! cls     ***Clear screen
+
+CRATE DATABASE DBname;
+
+// Add SERIAL FOR AUTO INCREMENT PK
+CREATE TABLE COMPANY(
+ ID  SERIAL PRIMARY KEY,
+   NAME           TEXT      NOT NULL,
+   AGE            INT       NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+
+
+DELETE FROM contact WHERE contactid like '1';
+
+Example:
+select c.customer_id, c.last_name, SUM(p.amount)
+from payment as p, customer as c
+where c.customer_id = p.customer_id
+group by c.customer_id;
+
+
+insert into contact(contactid,firstname,lastname,address,city,country)
+values (2,'John','Steal','222 Street','Montreal','Canada'),
+       (3,'Jack','Franck','333 Street','Montreal','Canada'),
+	   (4,'Isabelle','Bridge','444 Street','Montreal','Canada');
+
+
+select * from contact where firstname in ('Alex' , 'Isabelle' , 'John');
+
+
+update contact
+set city = 'Toronto'
+where contactid = 2;
+
+----------------------------------------------------
+
+Connect and Select Postgresql
+
+***pip install psycopg2***
+
+
+import psycopg2
+
+conn = psycopg2.connect(
+    database = "dvdrental",
+    user = "postgres",
+    password = "kiss7673",
+    host = "localhost",
+    port = "5432"
+)
+
+cur = conn.cursor()
+
+cur.execute("SELECT * from customer limit 5")
+rows = cur.fetchall()
+
+for row in rows:
+    print("customer id :",row[0])
+    print("first Name :",row[2])
+    print("last Name :",row[3])
+    print("email :",row[4])
+    print("address id :",row[5])
+    print("create date :",row[7])
+    print("\n")
+
+print("Connection succeed !")
+
+--------------------------------------------------------
+Insert into postgresql
+
+import psycopg2
+
+conn = psycopg2.connect(
+    database = "clients",
+    user = "postgres",
+    password = "kiss7673",
+    host = "localhost",
+    port = "5432"
+)
+
+cur = conn.cursor()
+
+cur.execute("insert into contact(contactid,firstname,lastname,address,city,country)values('9','lionel','tremblay','street','ottawa','canada')")
+conn.commit()
+
+cur.execute("SELECT * from contact")
+rows = cur.fetchall()
+
+for row in rows:
+    print("Contact id :",row[0])
+    print("first Name :",row[1])
+    print("last Name :",row[2])
+    print("Address :",row[3])
+    print("City :",row[4])
+    print("Country :",row[5])
+    print("\n")
+
+print("Connection succeed !")
+
+
+**Other INSERT with Python INPUT**
+
+import psycopg2
+
+conn = psycopg2.connect(
+    database = "clients",
+    user = "postgres",
+    password = "kiss7673",
+    host = "localhost",
+    port = "5432"
+)
+
+cur = conn.cursor()
+
+id = input("Enter ID: ")
+first = input("Enter first name: ")
+last = input("Enter Last Name: ")
+address = input("Enter Address: ")
+city = input("Enter City: ")
+country = input("Enter Country: ")
+
+cur.execute("insert into contact(contactid,firstname,lastname,address,city,country)values(%s,%s,%s,%s,%s,%s)",(id,first,last,address,city,country))
+conn.commit()
+
+cur.execute("SELECT * from contact")
+rows = cur.fetchall()
+
+for row in rows:
+    print("Contact id :",row[0])
+    print("first Name :",row[1])
+    print("last Name :",row[2])
+    print("Address :",row[3])
+    print("City :",row[4])
+    print("Country :",row[5])
+    print("\n")
+
+conn.close()
+
+
+-----------------------------------------------------------
+Delete from Postgresql
+
+import psycopg2
+
+conn = psycopg2.connect(
+    database = "clients",
+    user = "postgres",
+    password = "kiss7673",
+    host = "localhost",
+    port = "5432"
+)
+
+cur = conn.cursor()
+
+cur.execute("Delete from contact where contactid = 9")
+conn.commit()
+
+cur.execute("SELECT * from contact")
+rows = cur.fetchall()
+
+for row in rows:
+    print("Contact id :",row[0])
+    print("first Name :",row[1])
+    print("last Name :",row[2])
+    print("Address :",row[3])
+    print("City :",row[4])
+    print("Country :",row[5])
+    print("\n")
+
+conn.close()
+
+-------------------------------------------
+Update from Postgresql
+
+import psycopg2
+
+conn = psycopg2.connect(
+    database = "clients",
+    user = "postgres",
+    password = "kiss7673",
+    host = "localhost",
+    port = "5432"
+)
+
+cur = conn.cursor()
+
+cur.execute("update contact set firstname = 'Mister test' where contactid = 1")
+conn.commit()
+
+cur.execute("SELECT * from contact")
+rows = cur.fetchall()
+
+for row in rows:
+    print("Contact id :",row[0])
+    print("first Name :",row[1])
+    print("last Name :",row[2])
+    print("Address :",row[3])
+    print("City :",row[4])
+    print("Country :",row[5])
+    print("\n")
+
+conn.close()
+
+***Multiple Update***
+update contact set firstname = 'Frank', lastname = 'Lester', address = '6677 Street', city = 'Montreal', country = 'Canada' where cotactid = 1;
